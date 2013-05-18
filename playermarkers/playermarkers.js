@@ -1,6 +1,8 @@
 var INTERVAL = 5 * 1000;
+var ANIMATED = true;
+
 var JSON_PATH = "/path/to/players.json";
-var IMG_PATH = "/path/to/player.php?username=";
+var IMG_PATH = "/path/to/player.php?username={username}";
 
 String.prototype.endswith = function(suffix) {
 	return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -17,7 +19,7 @@ function PlayerMarker(ui, username, world, pos) {
 		position: this.ui.mcToLatLng(pos.x, pos.z, pos.y),
 		map: this.ui.gmap,
 		title: this.username,
-		icon: IMG_PATH + username
+		icon: IMG_PATH.replace("{username}", username)
 	});
 	
 	this.moveCounter = 0;
@@ -29,15 +31,23 @@ PlayerMarker.prototype.setActive = function(active) {
 	if(active == this.active)
 		return;
 	this.active = active;
-	if(active) {
+	if(active)
 		this.marker.setMap(this.ui.gmap);
-	} else
+	else
 		this.marker.setMap(null);
 };
 
-PlayerMarker.prototype.move = function(destination) {
+PlayerMarker.prototype.move = function(destination) {	
+	if(!ANIMATED) {
+		this.destination = destination;
+		var d = destination;
+		this.marker.setPosition(this.ui.mcToLatLng(d.x, d.z, d.y));
+		return;
+	}
+	
 	if(this.start != null) {
-		this.marker.setPosition(this.ui.mcToLatLng(this.destination));
+		var d = this.destination;
+		this.marker.setPosition(this.ui.mcToLatLng(d.x, d.z, d.y));
 	}
 	
 	this.start = this.destination;
@@ -103,11 +113,14 @@ MapPlayerMarkerHandler.prototype.onMapChange = function(name, rotation) {
 	this.currentWorld = this.ui.getConfig(name).worldName;
 	
 	var playersOnline = 0;
-	for(var i = 0; i < this.players.length; i++) {
-		var player = this.players[i];
+	for(var name in this.players) {
+		var player = this.players[name];
 		player.setActive(player.world == this.currentWorld);
-		if(player.active)
+		if(player.active) {
 			playersOnline++;
+			if(!ANIMATED)
+				player.move(player.destination);
+		}
 	}
 	
 	document.title = "(" + playersOnline + ") " + this.documentTitle;
@@ -134,7 +147,7 @@ MapPlayerMarkerHandler.prototype.updatePlayers = function(data) {
 		}
 		
 		// TODO better world mapping
-		player.setActive(user.world.endswith(this.currentWorld));
+		player.setActive(user.world == this.currentWorld);
 		
 		if(player.active) {
 			player.move(pos);
