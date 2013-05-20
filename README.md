@@ -6,7 +6,7 @@ rendered with mapcrafter.
 The script is free software and available under the GPL license. The PHP-Script
 to generate the player images is a modified version of the script from TJ09
 ([forum
-link](http://forums.bukkit.org/threads/info-mapmarkers-v0-3-4-1-1r6.843/).
+link](http://forums.bukkit.org/threads/info-mapmarkers-v0-3-4-1-1r6.843/)).
 
 ## Requirements ##
 
