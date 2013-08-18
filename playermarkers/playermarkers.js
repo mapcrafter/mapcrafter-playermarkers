@@ -20,6 +20,7 @@ var ANIMATED = true;
 
 var JSON_PATH = "/path/to/players.json";
 var IMG_PATH = "/path/to/player.php?username={username}";
+var IMG_SIZE_FACTOR = 1.5;
 
 String.prototype.endswith = function(suffix) {
 	return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -30,14 +31,16 @@ function PlayerMarker(ui, username, world, pos) {
 	
 	this.username = username;
 	this.world = world;
-	this.active = false;
+	this.active = true;
 	
-	this.marker = new google.maps.Marker({
-		position: this.ui.mcToLatLng(pos.x, pos.z, pos.y),
-		map: this.ui.gmap,
+	this.marker = L.marker(this.ui.mcToLatLng(pos.x, pos.z, pos.y), {
 		title: this.username,
-		icon: IMG_PATH.replace("{username}", username)
+		icon: L.icon({
+			iconUrl: IMG_PATH.replace("{username}", username),
+			iconSize: [16 * IMG_SIZE_FACTOR, 32 * IMG_SIZE_FACTOR],
+		}),
 	});
+	this.marker.addTo(this.ui.lmap);
 	
 	this.moveCounter = 0;
 	this.start = null;
@@ -49,22 +52,22 @@ PlayerMarker.prototype.setActive = function(active) {
 		return;
 	this.active = active;
 	if(active)
-		this.marker.setMap(this.ui.gmap);
+		this.marker.addTo(this.ui.lmap);
 	else
-		this.marker.setMap(null);
+		this.ui.lmap.removeLayer(this.marker);
 };
 
 PlayerMarker.prototype.move = function(destination) {	
 	if(!ANIMATED) {
 		this.destination = destination;
 		var d = destination;
-		this.marker.setPosition(this.ui.mcToLatLng(d.x, d.z, d.y));
+		this.marker.setLatLng(this.ui.mcToLatLng(d.x, d.z, d.y));
 		return;
 	}
 	
 	if(this.start != null) {
 		var d = this.destination;
-		this.marker.setPosition(this.ui.mcToLatLng(d.x, d.z, d.y));
+		this.marker.setLatLng(this.ui.mcToLatLng(d.x, d.z, d.y));
 	}
 	
 	this.start = this.destination;
@@ -86,12 +89,12 @@ PlayerMarker.prototype.move = function(destination) {
 		var latlng1 = self.ui.mcToLatLng(self.start.x, self.start.z, self.start.y);
 		var latlng2 = self.ui.mcToLatLng(self.destination.x, self.destination.z, self.destination.y);
 		
-		var latDiff = latlng2.lat() - latlng1.lat();
-		var lngDiff = latlng2.lng() - latlng1.lng();
+		var latDiff = latlng2.lat - latlng1.lat;
+		var lngDiff = latlng2.lng - latlng1.lng;
 		
-		var lat = latlng2.lat() - latDiff*(step/steps);
-		var lng = latlng2.lng() - lngDiff*(step/steps);
-		self.marker.setPosition(new google.maps.LatLng(lat, lng));
+		var lat = latlng2.lat - latDiff*(step/steps);
+		var lng = latlng2.lng - lngDiff*(step/steps);
+		self.marker.setLatLng(new L.LatLng(lat, lng));
 		
 		step--;
 		if(step <= 0) {
@@ -129,25 +132,28 @@ MapPlayerMarkerHandler.prototype.create = function() {
 MapPlayerMarkerHandler.prototype.onMapChange = function(name, rotation) {
 	this.currentWorld = this.ui.getConfig(name).worldName;
 	
-	var playersOnline = 0;
+	var globalPlayersOnline = 0;
+	var worldPlayersOnline = 0;
 	for(var name in this.players) {
 		var player = this.players[name];
 		player.setActive(player.world == this.currentWorld);
+		globalPlayersOnline++;
 		if(player.active) {
-			playersOnline++;
+			worldPlayersOnline++;
 			if(!ANIMATED)
 				player.move(player.destination);
 		}
 	}
 	
-	document.title = "(" + playersOnline + ") " + this.documentTitle;
+	document.title = "(" + worldPlayersOnline + "/" + globalPlayersOnline + ") " + this.documentTitle;
 };
 
 MapPlayerMarkerHandler.prototype.updatePlayers = function(data) {
 	if(!data)
 		return;
-	
-	var playersOnline = []
+
+	var globalPlayersOnline = [];
+	var worldPlayersOnline = 0;
 	for(var i = 0; i < data["players"].length; i++) {
 		var user = data["players"][i];
 		var username = user.username;
@@ -157,29 +163,29 @@ MapPlayerMarkerHandler.prototype.updatePlayers = function(data) {
 
 		if(user.username in this.players) {
 			player = this.players[username];
-		}
-		else {
+		} else {
 			player = new PlayerMarker(ui, username, user.world, pos);
 			this.players[username] = player;
 		}
 		
 		// TODO better world mapping
 		player.setActive(user.world == this.currentWorld);
-		
+
 		if(player.active) {
+			worldPlayersOnline++;
 			player.move(pos);
-			playersOnline.push(username);
 		}
+		globalPlayersOnline.push(username);
 	}
 	
 	for(var name in this.players) {
-		if(playersOnline.indexOf(name) == -1) {
+		if(globalPlayersOnline.indexOf(name) == -1) {
 			this.players[name].setActive(false);
 			delete this.players[name];
 		}
 	}
 
-	document.title = "(" + playersOnline.length + ") " + this.documentTitle;
+	document.title = "(" + worldPlayersOnline + "/" + globalPlayersOnline.length + ") " + this.documentTitle;
 };
 
 $(window).ready(function() {	
