@@ -18,6 +18,7 @@ To use this script you need some things:
 * PHP for your webserver to generate the player images (alternatively, you
   could also use the default player skin or create the player images manually)
 * PHP write access to a directory to cache the player images
+* PHP-GD is needed
 
 ## Installation ##
 
