@@ -1,24 +1,24 @@
 # mapcrafter playermarkers #
 
-This is a script to show markers of players from a Minecraft Server on maps
+This is a script to show markers of players from a Minecraft server on maps
 rendered with mapcrafter.
 
 The script is free software and available under the GPL license. The PHP-Script
-to generate the player images is a modified version of the script from TJ09
+to generate the player images is a modified version of the script TJ09 wrote
 ([forum
 link](http://forums.bukkit.org/threads/info-mapmarkers-v0-3-4-1-1r6.843/)).
 
 ## Requirements ##
 
-To use this script you need some things:
+You need some things to use this script:
 
-* a map rendered with mapcrafter
-* a Bukkit Minecraft Server with a plugin
+* A map rendered with mapcrafter
+* A Bukkit Minecraft server with a plugin
   ([MapTools](http://github.com/m0r13/MapTools)) to provide the player data
 * PHP for your webserver to generate the player images (alternatively, you
   could also use the default player skin or create the player images manually)
 * PHP write access to a directory to cache the player images
-* PHP-GD is needed
+* PHP-GD library
 
 ## Installation ##
 
@@ -38,14 +38,14 @@ ln -s /path/to/minecraft/server/players.json /path/to/www/playermarkers/players.
 
 * Now configure the `playermarkers.js` script. You need to specify the path to
   the JSON-File with the player data and to the PHP-Script to generate the
-  player images. The script should also use the same update interval like the
+  player images. The script should also use the same update interval as the
   Bukkit plugin. The interval in the Javascript-File is in milliseconds, so
-  don't wonder. You can also turn the player movement animation off if you
+  don't be irrated. You can also turn the player movement animation off if you
   don't want it.
 
 * The last point is that you have to include the script into your rendered map.
-  Open your mapcrafter template and add the following lines after the
-  `<script>` section where the mapcrafter UI is initialized:
+  Open your mapcrafter template `index.html` file and add the following lines 
+  after the `<script>` section where the mapcrafter UI is initialized:
 
 ```
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
