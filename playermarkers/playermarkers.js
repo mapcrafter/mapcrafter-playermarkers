@@ -22,10 +22,6 @@ var JSON_PATH = "/path/to/players.json";
 var IMG_PATH = "/path/to/player.php?username={username}";
 var IMG_SIZE_FACTOR = 1.5;
 
-String.prototype.endswith = function(suffix) {
-	return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
-
 function PlayerMarker(ui, username, world, pos) {
 	this.ui = ui;
 	
@@ -168,7 +164,6 @@ MapPlayerMarkerHandler.prototype.updatePlayers = function(data) {
 			this.players[username] = player;
 		}
 		
-		// TODO better world mapping
 		player.setActive(user.world == this.currentWorld);
 
 		if(player.active) {
