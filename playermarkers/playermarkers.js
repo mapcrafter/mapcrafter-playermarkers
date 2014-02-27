@@ -126,7 +126,7 @@ MapPlayerMarkerHandler.prototype.create = function() {
 };
 
 MapPlayerMarkerHandler.prototype.onMapChange = function(name, rotation) {
-	this.currentWorld = this.ui.getConfig(name).worldName;
+	this.currentWorld = this.ui.getMapConfig(name).worldName;
 	
 	var globalPlayersOnline = 0;
 	var worldPlayersOnline = 0;
