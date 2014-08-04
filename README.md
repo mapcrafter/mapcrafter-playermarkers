@@ -1,7 +1,7 @@
-# mapcrafter playermarkers #
+# Mapcrafter playermarkers #
 
 This is a script to show markers of players from a Minecraft server on maps
-rendered with mapcrafter.
+rendered with Mapcrafter.
 
 The script is free software and available under the GPL license. The PHP-Script
 to generate the player images is a modified version of the script TJ09 wrote
@@ -12,7 +12,7 @@ link](http://forums.bukkit.org/threads/info-mapmarkers-v0-3-4-1-1r6.843/)).
 
 You need some things to use this script:
 
-* A map rendered with mapcrafter
+* A map rendered with Mapcrafter
 * A Bukkit Minecraft server with a plugin
   ([MapTools](http://github.com/m0r13/MapTools)) to provide the player data
 * PHP for your webserver to generate the player images (alternatively, you
@@ -44,8 +44,8 @@ ln -s /path/to/minecraft/server/players.json /path/to/www/playermarkers/players.
   don't want it.
 
 * The last point is that you have to include the script into your rendered map.
-  Open your mapcrafter template `index.html` file and add the following lines 
-  after the `<script>` section where the mapcrafter UI is initialized:
+  Open your Mapcrafter template `index.html` file and add the following lines 
+  after the `<script>` section where the Mapcrafter UI is initialized:
 
 ```
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
