@@ -2,7 +2,7 @@
 // original version was from TJ09
 // forum link: http://forums.bukkit.org/threads/info-mapmarkers-v0-3-4-1-1r6.843/
 
-$sizefactor = 1.5;
+$sizefactor = 1.0;
 $cachetime = 60*60*24; // 1 day
 
 function show_img($filename, $username="player") {

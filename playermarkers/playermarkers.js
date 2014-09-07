@@ -20,7 +20,7 @@ var ANIMATED = true;
 
 var JSON_PATH = "/path/to/players.json";
 var IMG_PATH = "/path/to/player.php?username={username}";
-var IMG_SIZE_FACTOR = 1.5;
+var IMG_SIZE_FACTOR = 1.0;
 
 function PlayerMarker(ui, username, world, pos) {
 	this.ui = ui;
