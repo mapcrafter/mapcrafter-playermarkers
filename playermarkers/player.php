@@ -53,7 +53,7 @@ if(!$src) {
 	if(is_alex($username)) {
 		show_img("alex.png", $username);
 	} else {
-		show_img("player.png", $username);
+		show_img("steve.png", $username);
 	}
 }
 
