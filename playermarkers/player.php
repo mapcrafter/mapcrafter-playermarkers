@@ -5,6 +5,19 @@
 $sizefactor = 1.0;
 $cachetime = 60*60*24; // 1 day
 
+function is_alex($s) { #FROM https://github.com/sh4ni/Minecraft-UUIC-Tools/blob/master/alexsteve.php modified
+	$json = file_get_contents("https://api.mojang.com/users/profiles/minecraft/".$s);
+	$id = json_decode($json);
+	if(!$id->id) {
+		return false; // can't get UUID from api.mojang.com
+	}
+	$s = str_replace("-", "", trim($id->id));
+	for($i = 0; $i < 4; $i++) {
+		$sub[$i] = intval("0x".substr($s, $i * 8, 8) + 0, 16);
+	}
+	return (bool)((($sub[0] ^ $sub[1]) ^ ($sub[2] ^ $sub[3])) % 2);
+}
+
 function show_img($filename, $username="player") {
 	// Headers.
 	header("Content-Type: image/png");
@@ -17,7 +30,7 @@ function show_img($filename, $username="player") {
 if(array_key_exists("username", $_GET)) {
 	$username = preg_replace("/[^a-zA-Z0-9_]/", "", $_GET["username"]);
 } else {
-	show_img("player.png");
+	show_img("steve.png");
 }
 
 
@@ -37,8 +50,11 @@ if(!$src) {
 	if(file_exists($filename)) {
 		show_img($filename, $username);
 	}
-	
-	show_img("player.png", $username);
+	if(is_alex($username)) {
+		show_img("alex.png", $username);
+	} else {
+		show_img("steve.png", $username);
+	}
 }
 
 $img = imagecreatetruecolor(16, 32);
