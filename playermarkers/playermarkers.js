@@ -103,7 +103,7 @@ PlayerMarker.prototype.move = function(destination) {
 	this.timeout = window.setTimeout(animate, time);
 };
 
-MapPlayerMarkerHandler.prototype = new BaseHandler();
+MapPlayerMarkerHandler.prototype = new MapPlayerMarkerHandler();
 
 function MapPlayerMarkerHandler() {
 	this.players = {};
